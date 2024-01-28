@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://c67i8ld245c53"]
+
+[ext_resource type="Shader" uid="uid://ceqqoicg4vopr" path="res://Shaders/stripes.res" id="1_ksbyp"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dba6q"]
+size = Vector3(20, 20, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mlh6q"]
+render_priority = 0
+shader = ExtResource("1_ksbyp")
+shader_parameter/stripe_size = null
+
+[node name="Wall" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_dba6q")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 0.5, 0, 0, 0)
+material = SubResource("ShaderMaterial_mlh6q")
