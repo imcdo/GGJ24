@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dyiulicc0hcpr"]
+
+[ext_resource type="Shader" uid="uid://pxuclj32s7h1" path="res://Shaders/spots.tres" id="1_o03ua"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hpk5r"]
+size = Vector3(20, 0.5, 20)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hulk0"]
+render_priority = 0
+shader = ExtResource("1_o03ua")
+
+[node name="Floor" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_hpk5r")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(20, 0, 0, 0, 0.5, 0, 0, 0, 20, 0, 0, 0)
+material = SubResource("ShaderMaterial_hulk0")

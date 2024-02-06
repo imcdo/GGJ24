@@ -4,11 +4,17 @@ class_name Cannon
 
 signal on_fire(nose: Nose)
 
+const RAYCAST_DIST = 50
+
 @export
 var horizontal_rotation_speed: float = .2
 
 @export
 var vertical_rotation_speed: float = 1
+
+@export
+var wheel_rotation_speed: float = 1
+
 
 @export
 var nose_scene: PackedScene = preload("res://Scenes/nose.tscn")
@@ -20,10 +26,17 @@ var aim_percent: float = .75
 var max_aim_percent: float = .5
 
 @onready
-var wheels_obj: Node3D = $Wheels
+var wheels_obj: Node3D = $Mount
 
 @onready
-var cannon_obj: Node3D = $Wheels/Cannon
+var cannon_obj: Node3D = $Mount/Cannon
+
+@onready
+var camera_pos: Node3D = $Mount/CameraPos
+
+@onready
+var spawn_pos: Node3D = $Mount/Cannon/NoseSpawn
+
 
 @onready
 var viewport: Viewport = get_viewport()
@@ -40,7 +53,7 @@ var max_aim_radius: float
 var active: bool = true
 
 @export
-var default_power: float = 20
+var default_power: float = 60
 @export
 var max_power: float = 100
 @export
@@ -72,8 +85,8 @@ func fire():
 		# var new_bullet: Node2D = bullet.instantiate()
 		var nose = nose_scene.instantiate() as Nose
 		get_tree().get_root().add_child(nose)
-		nose.global_position = $Wheels/Cannon/NoseSpawn.global_position
-		nose.rotation_degrees = $Wheels/Cannon/NoseSpawn.rotation_degrees
+		nose.global_position = spawn_pos.global_position
+		nose.rotation_degrees = spawn_pos.rotation_degrees
 		nose.linear_velocity = -cannon_obj.get_global_transform().basis.z.normalized() * power
 		on_fire.emit(nose)
 
@@ -94,11 +107,11 @@ func _recalculate_values():
 	_max_viewport_size = Vector2(viewport.size.x, viewport.size.y)
 
 func get_camera_target() -> Node3D:
-	return $Wheels/Cannon/CameraPos
+	return camera_pos
 
 func _aim_camera():
 	var space_state = get_world_3d().direct_space_state
-	var cannon_forward = - cannon_obj.get_global_transform().basis.z * 1000
+	var cannon_forward = - spawn_pos.get_global_transform().basis.z * RAYCAST_DIST
 
 	var origin = cannon_obj.global_position
 	var end = origin + cannon_forward
@@ -106,11 +119,18 @@ func _aim_camera():
 	query.collide_with_bodies = true
 
 	var result = space_state.intersect_ray(query)
-	$Wheels/Cannon/CameraPos.look_at(result.get("position", cannon_forward))
+	camera_pos.look_at(result.get("position", spawn_pos.global_position + cannon_forward))
 
 
 func _physics_process(delta):
 	_aim_camera()
+
+func rotate_wheels(amount: float):
+	var left = $Mount/Axle/WheelsLeft
+	var right = $Mount/Axle/WheelsRight
+	
+	left.rotate_x(amount * wheel_rotation_speed)
+	right.rotate_x(-amount * wheel_rotation_speed)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -118,6 +138,7 @@ func _process(delta):
 		_recalculate_values()
 		var aim: Vector2 = _get_mouse_aim() * delta
 		wheels_obj.rotate_y(-aim.x)
+		rotate_wheels(-aim.x)
 		if abs(aim.x) < 0.001:
 			cannon_obj.rotate_x(-aim.y)
 

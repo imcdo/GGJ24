@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://tist22v8eo4y"]
+[gd_scene load_steps=12 format=3 uid="uid://tist22v8eo4y"]
 
 [ext_resource type="Script" path="res://Scenes/Levels/test_scene.gd" id="1_j6b02"]
 [ext_resource type="PackedScene" uid="uid://biyjh8h1bnio7" path="res://Scenes/cannon.tscn" id="1_y1gwu"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://6kir75oqaduq" path="res://Scenes/Levels/camera_controller.tscn" id="4_5tl4h"]
 [ext_resource type="PackedScene" uid="uid://radqpacgyj3g" path="res://Scenes/clown.tscn" id="5_nh4h6"]
 [ext_resource type="PackedScene" uid="uid://c67i8ld245c53" path="res://Scenes/Obsticals/Static/wall.tscn" id="6_g7abd"]
+[ext_resource type="PackedScene" uid="uid://dyiulicc0hcpr" path="res://Scenes/Obsticals/Static/floor.tscn" id="7_ylayg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_10rch"]
 
@@ -25,7 +26,7 @@ ambient_light_energy = 2.0
 script = ExtResource("1_j6b02")
 
 [node name="Cannon" parent="." instance=ExtResource("1_y1gwu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.183332, 1.09989, 9.99805)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.28617, 1.09989, 9.99805)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.568605, 0.822611, 0, -0.822611, -0.568605, 0, 1.91503, 0)
@@ -72,5 +73,8 @@ transform = Transform3D(0.802068, 0.189792, -0.566274, 0.597233, -0.254885, 0.76
 
 [node name="Wall3" parent="." instance=ExtResource("6_g7abd")]
 transform = Transform3D(0.886414, -0.147101, 0.438899, -0.462894, -0.281689, 0.840465, 0, -0.948163, -0.317785, 0, 0, -13)
+
+[node name="Floor" parent="." instance=ExtResource("7_ylayg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.16688, 0, 9.17592)
 
 [connection signal="on_fire" from="Cannon" to="." method="_on_cannon_on_fire"]
